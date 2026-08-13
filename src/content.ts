@@ -1,3 +1,9 @@
+// PeopleSoft renders instructors as "Last,First" (no space).
+function normalizeName(raw: string): string {
+    const match = raw.match(/^([^,]+),\s*(.+)$/);
+    return match ? `${match[2].trim()} ${match[1].trim()}` : raw;
+}
+
 function addBadges() {
     const names = document.querySelectorAll<HTMLSpanElement>('span[id^="MTG_INSTR"]');
 
@@ -20,11 +26,11 @@ function addBadges() {
         badge.style.fontWeight = "500";
         span.appendChild(badge);
 
-        chrome.runtime.sendMessage({ professorName: professorName }, (response) => {
-            // response is undefined if the service worker died or the port
-            // closed before replying; reading .rating would throw.
+        chrome.runtime.sendMessage({ professorName: normalizeName(professorName) }, (response) => {
             if (chrome.runtime.lastError || response?.rating == null) {
-                badge.remove();
+                // No RMP entry is greyed out so it's easy to tell.
+                badge.textContent = " —";
+                badge.style.color = "#999";
                 return;
             }
 
