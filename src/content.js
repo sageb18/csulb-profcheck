@@ -1,11 +1,11 @@
 // PeopleSoft renders instructors as "Last,First" (no space).
-function normalizeName(raw: string): string {
+function normalizeName(raw) {
     const match = raw.match(/^([^,]+),\s*(.+)$/);
     return match ? `${match[2].trim()} ${match[1].trim()}` : raw;
 }
 
 function addBadges() {
-    const names = document.querySelectorAll<HTMLSpanElement>('span[id^="MTG_INSTR"]');
+    const names = document.querySelectorAll('span[id^="MTG_INSTR"]');
 
     names.forEach(span => {
 
@@ -27,14 +27,16 @@ function addBadges() {
         span.appendChild(badge);
 
         chrome.runtime.sendMessage({ professorName: normalizeName(professorName) }, (response) => {
-            if (chrome.runtime.lastError || response?.rating == null) {
+            if (chrome.runtime.lastError || response?.avgRating == null) {
                 // No RMP entry is greyed out so it's easy to tell.
                 badge.textContent = " —";
                 badge.style.color = "#999";
                 return;
             }
-
-            badge.textContent = ` ${response.rating} ★`;
+            
+            const profRating = response.avgRating;
+            const diffRating = response.avgDifficulty;
+            badge.textContent = ` ${profRating} ★, ${diffRating} ⚡`;
         });
     });
 }

@@ -5,18 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "esbuild src/background.ts src/content.ts --bundle --outdir=dist --alias:fs=./fs-stub.js",
-    "watch": "esbuild src/background.ts src/content.ts --bundle --outdir=dist --alias:fs=./fs-stub.js --watch"
+    "build": "esbuild src/background.js src/content.js --bundle --outdir=dist --alias:fs=./fs-stub.js",
+    "watch": "esbuild src/background.js src/content.js --bundle --outdir=dist --alias:fs=./fs-stub.js --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "@types/chrome": "^0.2.5",
-    "esbuild": "^0.28.2",
-    "tsx": "^4.23.12",
-    "typescript": "^7.0.2"
+    "esbuild": "^0.28.2"
   },
   "dependencies": {
     "rate-my-professor-api-ts": "^1.0.5"
