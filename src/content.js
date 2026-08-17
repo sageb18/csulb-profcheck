@@ -4,13 +4,19 @@ function normalizeName(raw) {
     return match ? `${match[2].trim()} ${match[1].trim()}` : raw;
 }
 
-// Color of pill based on the star rating
-function ratingClass(rating) {
-    if (rating >= 4) return "pc-badge--good";
-    if (rating >= 3) return "pc-badge--ok";
-    return "pc-badge--poor";
+// Clicking a second badge closes the first card, 
+// and clicking anywhere else on the page closes any open card.
+let openCard = null;
+let openBadge = null;
+
+function closeCard() {
+    if (openCard) openCard.remove();
+    if (openBadge) openBadge.classList.remove("pc-badge--open");
+    openCard = null;
+    openBadge = null;
 }
 
+document.addEventListener("click", closeCard);
 
 function addBadges() {
     const names = document.querySelectorAll('span[id^="MTG_INSTR"]');
@@ -28,73 +34,84 @@ function addBadges() {
         // Once adding a badge, mark as done so this process isn't repeated.
         span.dataset.bvDone = "1";
 
+        // placeholder for where the professor info lives
+        let profInfo = null;
+
         const badge = document.createElement("span");
         badge.className = "pc-badge pc-badge--loading";
         badge.textContent = "…";
+
+        // omg why does the badge keep wrapping
+        span.style.whiteSpace = "nowrap";
         span.appendChild(badge);
 
+
+        /*
+        ------------------------------------------
+        click functionality for the badge
+        ------------------------------------------
+        */
         badge.addEventListener("click", (event) => {
             // PeopleSoft has its own click handlers on the table rows that we need to stop
             event.stopPropagation();
 
-            // If card is already open, clicking again closes it.
-            const openCard = badge.querySelector(".pc-card");
-            if (openCard) {
-                openCard.remove();
+            // Clicking the badge whose card is already open just closes it.
+            if (openBadge === badge) {
+                closeCard();
                 return;
             }
 
+            closeCard(); // close whatever else was open
+            if (!profInfo) return;
+
             const professorCard = document.createElement("div");
             professorCard.className = "pc-card";
-            professorCard.textContent = "Hello from professor card!";
-            badge.appendChild(professorCard);
+            professorCard.textContent = normalizeName(professorName);
+
+            // Clicks inside the card shouldn't dismiss it.
+            professorCard.addEventListener("click", (e) => e.stopPropagation());
+
+            // Attach to body so no PeopleSoft container can mess with it
+            document.body.appendChild(professorCard);
+            const rect = badge.getBoundingClientRect();
+            const maxLeft = window.scrollX + document.documentElement.clientWidth - 320 - 8;
+
+            professorCard.style.top = `${rect.bottom + window.scrollY + 6}px`;
+            professorCard.style.left = `${Math.min(rect.left + window.scrollX, maxLeft)}px`;
+
+            openCard = professorCard;
+            openBadge = badge;
+            badge.classList.add("pc-badge--open");
         });
 
         chrome.runtime.sendMessage({ professorName: normalizeName(professorName) }, (response) => {
             if (chrome.runtime.lastError || response?.info?.avgRating == null) {
                 // No RMP entry is greyed out so it's easy to tell.
-                badge.className = "pc-badge pc-badge--none";
+                badge.className = "pc-badge pc-badge--empty";
                 badge.textContent = "—";
                 badge.title = "No Rate My Professor ratings found";
-
-                // Store the professor info in the badge for the togglable professor card
-                badge.profInfo = response.info;
-
                 return;
             }
 
-            const profRating = response.info.avgRating;
-            const diffRating = response.info.avgDifficulty;
-            const department = response.info.department;
-            const numRatings = response.info.numRatings;
-            const wouldTakeAgainPercent = response.info.wouldTakeAgainPercent;
+            profInfo = response.info;
 
-            // The pill itself stays short, just the two headline numbers.
-            badge.className = "pc-badge " + ratingClass(profRating);
-            badge.textContent = `${Number(profRating).toFixed(1)} ★  ${Number(diffRating).toFixed(1)} ⚡`;
-
-            // Everything else goes in the hover tooltip for now. 
-            // The next step moves this into a proper card you click open.
-            const parts = [`${numRatings} ratings`];
-
-            // RMP sends -1 when nobody answered the would take again question.
-            if (wouldTakeAgainPercent >= 0) {
-                parts.push(`${Math.round(wouldTakeAgainPercent)}% would take again`);
-            }
-
-            if (department) {
-                parts.push(department);
-            }
-
-            badge.title = parts.join(" · ");
-
+            badge.className = "pc-badge";
+            badge.textContent = `${Number(profInfo.avgRating).toFixed(1)} ⭐`;
         });
     });
 };
 
 
 
-const observer = new MutationObserver(() => addBadges());
+// The extension's own DOM changes count as mutations, so we need to debounce the logic for adding badges
+let pendingScan = null;
+const observer = new MutationObserver(() => {
+    if (pendingScan) return;
+    pendingScan = setTimeout(() => {
+        pendingScan = null;
+        addBadges();
+    }, 150);
+});
 observer.observe(document.body, { childList: true, subtree: true });
 
 addBadges();
