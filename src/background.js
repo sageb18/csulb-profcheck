@@ -7,16 +7,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       const info = await rmp.get_professor_info();
       console.log("got:", info);
 
-      if (!info?.avgRating || !info?.avgDifficulty) {
-        console.warn("no rating for:", request.professorName, info);
-        sendResponse({ avgRating: null, avgDifficulty: null });
+      if (!info || !info.numRatings) {
+        console.warn("no ratings for:", request.professorName, info);
+        sendResponse({ info: null });
         return;
       }
 
-      sendResponse({ avgRating: info.avgRating, avgDifficulty: info.avgDifficulty });
+      sendResponse({ info: info });
     } catch (err) {
       console.error("lookup failed:", err);
-      sendResponse({ avgRating: null, avgDifficulty: null });
+      sendResponse({ info: null });
     }
   })();
   return true;

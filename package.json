@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "esbuild src/background.js src/content.js --bundle --outdir=dist --alias:fs=./fs-stub.js",
-    "watch": "esbuild src/background.js src/content.js --bundle --outdir=dist --alias:fs=./fs-stub.js --watch"
+    "build": "esbuild src/background.js src/content.js src/styles.css --bundle --outdir=dist --alias:fs=./fs-stub.js",
+    "watch": "esbuild src/background.js src/content.js src/styles.css --bundle --outdir=dist --alias:fs=./fs-stub.js --watch"
   },
   "keywords": [],
   "author": "",
