@@ -33,12 +33,33 @@ function addBadges() {
         badge.textContent = "…";
         span.appendChild(badge);
 
+        badge.addEventListener("click", (event) => {
+            // PeopleSoft has its own click handlers on the table rows that we need to stop
+            event.stopPropagation();
+
+            // If card is already open, clicking again closes it.
+            const openCard = badge.querySelector(".pc-card");
+            if (openCard) {
+                openCard.remove();
+                return;
+            }
+
+            const professorCard = document.createElement("div");
+            professorCard.className = "pc-card";
+            professorCard.textContent = "Hello from professor card!";
+            badge.appendChild(professorCard);
+        });
+
         chrome.runtime.sendMessage({ professorName: normalizeName(professorName) }, (response) => {
             if (chrome.runtime.lastError || response?.info?.avgRating == null) {
                 // No RMP entry is greyed out so it's easy to tell.
                 badge.className = "pc-badge pc-badge--none";
                 badge.textContent = "—";
                 badge.title = "No Rate My Professor ratings found";
+
+                // Store the professor info in the badge for the togglable professor card
+                badge.profInfo = response.info;
+
                 return;
             }
 
@@ -72,25 +93,8 @@ function addBadges() {
 };
 
 
-function onClick() {
-
-    const professorCard = document.createElement("div");
-    professorCard.className = "pc-card";
-    professorCard.textContent = "Loading…";
-
-    const badges = document.getElementsByClassName("pc-badge");
-    for (const badge of badges) {
-        badge.addEventListener("click", () => {
-            document.body.appendChild(professorCard);
-            professorCard.style.display = 'block';
-        });
-    }
-
-}
-
 
 const observer = new MutationObserver(() => addBadges());
 observer.observe(document.body, { childList: true, subtree: true });
 
 addBadges();
-onClick();
