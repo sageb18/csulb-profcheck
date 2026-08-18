@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "description": "Shows Rate My Professors ratings next to instructor names on the CSULB class search page.",
   "icons": {
-    "16": "src/icons/icon-16.png",
-    "32": "src/icons/icon-32.png",
-    "48": "src/icons/icon-48.png",
-    "128": "src/icons/icon-128.png"
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
   },
   "content_scripts": [
     {
