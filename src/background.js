@@ -1,5 +1,3 @@
-import { RateMyProfessor } from "rate-my-professor-api-ts";
-
 // Hardcoding CSULB's RMP school ID since it never changes and looking it up
 // was costing a lot of time and requests. 
 const CSULB_SCHOOL_ID = "U2Nob29sLTE4ODQ2";
@@ -33,6 +31,40 @@ const SEARCH_QUERY = `query TeacherSearch($query: TeacherSearchQuery!) {
   }
 }`;
 
+function namesMatch(professorName, candidate) {
+  const parts = professorName.trim().toLowerCase().split(/\s+/);
+  const queryFirst = parts[0];
+  const queryLast = parts[parts.length - 1];
+
+  const first = (candidate.firstName || "").trim().toLowerCase();
+  const last = (candidate.lastName || "").trim().toLowerCase();
+
+  // last name has to match and compare only the final word so a middle name/initial
+  // doesnt break a good match
+  if (queryLast !== last.split(/\s+/).pop()) return false;
+
+  if (queryFirst === first) return true;
+
+  // accepting when a first name is a prefix of the other
+  // ex: "dan" vs "daniel"
+  const shorter = queryFirst.length < first.length ? queryFirst : first;
+  const longer = queryFirst.length < first.length ? first : queryFirst;
+  return shorter.length >= 3 && longer.startsWith(shorter);
+}
+
+function pickBestMatch(candidates, professorName) {
+  const matches = candidates.filter(c => 
+    c.school?.name === CSULB_SCHOOL_NAME && namesMatch(professorName, c)
+  );
+
+  if (!matches.length) return null;
+
+  // RMP has duplicate pages for some professors. an example i found on csulb's website
+  // was "Xiaolong Wu" with 2 ratings and "Xiaolong WU" with 41. 
+  // going to make the "busier" page the real one. AKA whichever one has more ratings
+  return matches.reduce((best, c) => (c.numRatings > best.numRatings ? c : best));
+}
+
 async function lookupProfessor(professorName) {
   const response = await fetch(API_LINK, {
     method: "POST",
@@ -57,18 +89,7 @@ async function lookupProfessor(professorName) {
   // unwrap edges/node into a simple array of professor info objects
   const candidates = data.data.search.teachers.edges.map(e => e.node);
 
-  // temporary: see what api is returning
-
-  console.log(`[${professorName}] ${candidates.length} candidates:`);
-  candidates.forEach((c, i) => {
-    console.log(`  [${i}] ${c.firstName} ${c.lastName} (${c.department}) 
-      - ${c.avgRating}, ${c.numRatings} ratings, ${c.wouldTakeAgainPercent}% would take again, 
-      difficulty ${c.avgDifficulty}/5, ${c.department} @ ${c.school.name}`);
-  });
-
-  // still taking first result like the library did
-  // changing this later
-  return candidates[0] ?? null;
+  return pickBestMatch(candidates, professorName);
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
