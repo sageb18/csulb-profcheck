@@ -149,7 +149,6 @@ function addBadges() {
             }
 
             profInfo = response.info;
-            console.log(profInfo);
 
             badge.className = "pc-badge";
             badge.textContent = `${Number(profInfo.avgRating).toFixed(1)} ⭐`;

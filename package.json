@@ -1,12 +1,12 @@
 {
   "name": "csulb-profcheck",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Chrome extension that shows Rate My Professors ratings next to instructor names on the CSULB class search page.",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "esbuild src/background.js src/content.js src/styles.css --bundle --outdir=dist --alias:fs=./fs-stub.js",
-    "watch": "esbuild src/background.js src/content.js src/styles.css --bundle --outdir=dist --alias:fs=./fs-stub.js --watch"
+    "build": "esbuild src/background.js src/content.js src/styles.css --bundle --outdir=dist",
+    "watch": "esbuild src/background.js src/content.js src/styles.css --bundle --outdir=dist --watch",
+    "package": "npm run build && powershell -Command \"Compress-Archive -Path manifest.json,dist,icons -DestinationPath profcheck.zip -Force\""
   },
   "keywords": [],
   "author": "",
@@ -14,9 +14,5 @@
   "type": "commonjs",
   "devDependencies": {
     "esbuild": "^0.28.2"
-  },
-  "dependencies": {
-    "rate-my-professor-api-ts": "^1.0.5"
   }
-
 }
