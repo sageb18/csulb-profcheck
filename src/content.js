@@ -143,7 +143,7 @@ function addBadges() {
             if (chrome.runtime.lastError || response?.info?.avgRating == null) {
                 // No RMP entry is greyed out so it's easy to tell.
                 badge.className = "pc-badge pc-badge--empty";
-                badge.textContent = "—";
+                badge.textContent = "No data found.";
                 badge.title = "No Rate My Professor ratings found";
                 return;
             }
