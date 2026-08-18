@@ -18,6 +18,63 @@ function closeCard() {
 
 document.addEventListener("click", closeCard);
 
+function buildProfessorCard(professorName, profInfo) {
+    const card = document.createElement("div");
+    card.className = "pc-card";
+
+    if (profInfo.department) {
+        const header = document.createElement("div");
+        header.className = "pc-card__header";
+        header.textContent = profInfo.department;
+        card.appendChild(header);
+    }
+
+    const name = document.createElement("div");
+    name.className = "pc-card__name";
+    name.textContent = normalizeName(professorName);
+    card.appendChild(name);
+
+    if (profInfo.avgRating) {
+        const rating = document.createElement("div");
+        rating.className = "pc-card__rating";
+        rating.textContent = `${Number(profInfo.avgRating).toFixed(1)}/5 ⭐`;
+        card.appendChild(rating);
+
+        // rating description
+        const ratingDesc = document.createElement("div");
+        ratingDesc.className = "pc-card__rating-desc";
+        ratingDesc.textContent = `Based on ${profInfo.numRatings} ratings`;
+        card.appendChild(ratingDesc);
+
+        // would take again & difficulty rating
+        const parts = [];
+
+        if (profInfo.wouldTakeAgainPercent >= 0) {
+              parts.push(`${Math.round(profInfo.wouldTakeAgainPercent)}% would take again`);
+        }
+
+        if (profInfo.avgDifficulty > 0) {
+              parts.push(`Difficulty: ${Number(profInfo.avgDifficulty).toFixed(1)}/5`);
+        }
+
+        if (parts.length) {
+            const footer = document.createElement("div");
+            footer.className = "pc-card__footer-container";
+
+            const footerDetails = document.createElement("div");
+            footerDetails.className = "pc-card__footer-details";
+            footerDetails.textContent = parts.join(" • ");
+            footer.appendChild(footerDetails);
+            card.appendChild(footer);
+        }
+
+
+    }
+
+
+    return card;
+}
+
 function addBadges() {
     const names = document.querySelectorAll('span[id^="MTG_INSTR"]');
 
@@ -64,9 +121,7 @@ function addBadges() {
             closeCard(); // close whatever else was open
             if (!profInfo) return;
 
-            const professorCard = document.createElement("div");
-            professorCard.className = "pc-card";
-            professorCard.textContent = normalizeName(professorName);
+            const professorCard = buildProfessorCard(professorName, profInfo);
 
             // Clicks inside the card shouldn't dismiss it.
             professorCard.addEventListener("click", (e) => e.stopPropagation());
@@ -94,6 +149,7 @@ function addBadges() {
             }
 
             profInfo = response.info;
+            console.log(profInfo);
 
             badge.className = "pc-badge";
             badge.textContent = `${Number(profInfo.avgRating).toFixed(1)} ⭐`;
