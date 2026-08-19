@@ -2,6 +2,8 @@
 
 # CSULB ProfCheck
 
+https://github.com/user-attachments/assets/9e9b4370-6314-43b7-babd-c3b1cd9ded1b
+
 [![Install from the Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Install%20now-EBA91B?style=for-the-badge&logo=googlechrome&logoColor=1B1B1B)](https://chromewebstore.google.com/detail/csulb-profcheck/fmkjoemppgjjnephaebphlcekhnaiepc)
 
 </div>
