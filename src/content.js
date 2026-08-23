@@ -19,6 +19,8 @@ function closeCard() {
 document.addEventListener("click", closeCard);
 
 function buildProfessorCard(professorName, profInfo) {
+    const normalName = normalizeName(professorName);
+
     const card = document.createElement("div");
     card.className = "pc-card";
 
@@ -31,8 +33,9 @@ function buildProfessorCard(professorName, profInfo) {
 
     const name = document.createElement("div");
     name.className = "pc-card__name";
-    name.textContent = normalizeName(professorName);
+    name.innerHTML = `<a href="https://www.ratemyprofessors.com/professor/${legacyId}">${normalName}</a>`;
     card.appendChild(name);
+
 
     if (profInfo.avgRating) {
         const rating = document.createElement("div");

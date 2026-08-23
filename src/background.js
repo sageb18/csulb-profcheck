@@ -17,6 +17,7 @@ const SEARCH_QUERY = `query TeacherSearch($query: TeacherSearchQuery!) {
     teachers(query: $query, first: 8) {
       edges {
         node {
+          legacyId
           firstName
           lastName
           department
