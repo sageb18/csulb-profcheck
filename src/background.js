@@ -66,7 +66,16 @@ function pickBestMatch(candidates, professorName) {
   return matches.reduce((best, c) => (c.numRatings > best.numRatings ? c : best));
 }
 
+
 async function lookupProfessor(professorName) {
+
+  // TTL cache
+  const key = `professor:${professorName.toLowerCase()}`;
+
+  const result = await chrome.storage.local.get(key);
+  const cached = result[key];
+
+  console.log("Cached professor: ", cached);
   const response = await fetch(API_LINK, {
     method: "POST",
     headers: HEADERS,
