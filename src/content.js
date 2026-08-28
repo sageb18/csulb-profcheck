@@ -33,7 +33,13 @@ function buildProfessorCard(professorName, profInfo) {
 
     const name = document.createElement("div");
     name.className = "pc-card__name";
-    name.innerHTML = `<a href="https://www.ratemyprofessors.com/professor/${legacyId}">${normalName}</a>`;
+    if (profInfo.legacyId) {
+        name.innerHTML = `<a href="https://www.ratemyprofessors.com/professor/${profInfo.legacyId}" 
+        target="_blank" rel="noopener noreferrer">${normalName}</a>`;
+    }
+    else {
+        name.textContent = normalName;
+    }
     card.appendChild(name);
 
 

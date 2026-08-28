@@ -142,6 +142,31 @@
     margin-bottom: 3px;
     letter-spacing: -0.01em;
     line-height: 1.25;
+    text-decoration: none;
+    min-height: 20px;
+}
+
+.pc-card__name a {
+    font-size: 15px;
+    transition: font-size 0.3s ease;
+}
+
+.pc-card__name a:hover {
+    font-size: 16px;
+}
+
+
+/* removing hyperlink blue & underline. 
+csulb's website has a bunch of styling for a
+that kept beating mine */
+.pc-card__name a,
+.pc-card__name a:link,
+.pc-card__name a:visited,
+.pc-card__name a:hover,
+.pc-card__name a:focus {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: underline;
 }
 
 .pc-card__rating {
