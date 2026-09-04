@@ -2,6 +2,10 @@
 // was costing a lot of time and requests. 
 const CSULB_SCHOOL_ID = "U2Nob29sLTE4ODQ2";
 const CSULB_SCHOOL_NAME = "California State University Long Beach";
+
+const UCI_SCHOOL_ID = "U2Nob29sLTEwNzQ=";
+const UCI_SCHOOL_NAME = "UC Irvine";
+
 const API_LINK = "https://www.ratemyprofessors.com/graphql";
 
 const HEADERS = {
@@ -66,16 +70,41 @@ function pickBestMatch(candidates, professorName) {
   return matches.reduce((best, c) => (c.numRatings > best.numRatings ? c : best));
 }
 
+// Save data to the cache with TTL duration
+async function setCache(key, value, ttlInSeconds) {
+  const expiry = Date.now() + (ttlInSeconds * 1000);
+  const cacheData = { value, expiry };
+
+  await chrome.storage.local.set({ [key]: cacheData });
+}
+
+async function getCache(key) {
+  const result = await chrome.storage.local.get([key]);
+  const cacheData = result[key]
+
+  if (!cacheData) {
+    return undefined;
+  }
+
+  if (Date.now() > cacheData.expiry) {
+    await chrome.storage.local.remove([key]);
+    return undefined;
+  }
+
+  return cacheData.value;
+}
 
 async function lookupProfessor(professorName) {
 
-  // TTL cache
-  const key = `professor:${professorName.toLowerCase()}`;
+  const key = `professor:${professorName.toLowerCase().trim()}`;
+  const oneDayInSeconds = 86400
 
-  const result = await chrome.storage.local.get(key);
-  const cached = result[key];
-
-  console.log("Cached professor: ", cached);
+  // Try cache
+  const cachedData = await getCache(key);
+  if (cachedData !== undefined) {
+    return cachedData;
+  }
+  
   const response = await fetch(API_LINK, {
     method: "POST",
     headers: HEADERS,
@@ -99,7 +128,10 @@ async function lookupProfessor(professorName) {
   // unwrap edges/node into a simple array of professor info objects
   const candidates = data.data.search.teachers.edges.map(e => e.node);
 
-  return pickBestMatch(candidates, professorName);
+  const bestMatch = pickBestMatch(candidates, professorName);
+
+  await setCache(key, bestMatch, oneDayInSeconds);
+  return bestMatch;
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
