@@ -36,3 +36,14 @@ A Chrome extension that shows Rate My Professors ratings directly in MyCSULB's c
 No personal data is collected or transmitted, the only outbound request is the instructor name, sent to Rate My Professors to look up their public rating.
 
 Not affiliated with or endorsed by California State University, Long Beach, Oracle/PeopleSoft, or Rate My Professors.
+
+---
+
+## Update Notes
+
+version 1.1.0:
+- added professor names as hyperlinks to their RateMyProfessors pages
+- added caching to make professor ratings load faster and reduce unnecessary requests
+
+version 1.0.0:
+- initial launch
