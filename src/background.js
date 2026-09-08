@@ -3,9 +3,6 @@
 const CSULB_SCHOOL_ID = "U2Nob29sLTE4ODQ2";
 const CSULB_SCHOOL_NAME = "California State University Long Beach";
 
-const UCI_SCHOOL_ID = "U2Nob29sLTEwNzQ=";
-const UCI_SCHOOL_NAME = "UC Irvine";
-
 const API_LINK = "https://www.ratemyprofessors.com/graphql";
 
 const HEADERS = {

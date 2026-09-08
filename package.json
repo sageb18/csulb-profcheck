@@ -1,6 +1,6 @@
 {
   "name": "csulb-profcheck",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Chrome extension that shows Rate My Professors ratings next to instructor names on the CSULB class search page.",
   "private": true,
   "scripts": {
