@@ -150,6 +150,13 @@ function addBadges() {
 
         chrome.runtime.sendMessage({ professorName: normalizeName(professorName) }, (response) => {
             if (chrome.runtime.lastError || response?.info?.avgRating == null) {
+
+                const sectionElement = span.closest("table");
+
+                if (sectionElement) {
+                    sectionElement.dataset.hasProfCheckRating = "false";
+                }
+
                 // No RMP entry is greyed out so it's easy to tell.
                 badge.className = "pc-badge pc-badge--empty";
                 badge.textContent = "No data found.";
@@ -158,6 +165,19 @@ function addBadges() {
             }
 
             profInfo = response.info;
+
+
+            // MyCSULB stores their class sections in a table, so we can attach the professor info
+            // to each table for later use (sorting by rating, filtering by difficulty, etc).
+            const sectionElement = span.closest("table");
+
+            if (sectionElement) {
+                sectionElement.dataset.hasProfCheckRating = "true";
+                sectionElement.dataset.profcheckRating = profInfo.avgRating;
+                sectionElement.dataset.profcheckNumRatings = profInfo.numRatings;
+                sectionElement.dataset.profcheckWouldTakeAgain = profInfo.wouldTakeAgainPercent;
+                sectionElement.dataset.profcheckDifficulty = profInfo.avgDifficulty;
+            }
 
             badge.className = "pc-badge";
             badge.textContent = `${Number(profInfo.avgRating).toFixed(1)} ⭐`;
