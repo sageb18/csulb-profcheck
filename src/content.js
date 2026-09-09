@@ -59,11 +59,11 @@ function buildProfessorCard(professorName, profInfo) {
         const parts = [];
 
         if (profInfo.wouldTakeAgainPercent >= 0) {
-              parts.push(`${Math.round(profInfo.wouldTakeAgainPercent)}% would take again`);
+            parts.push(`${Math.round(profInfo.wouldTakeAgainPercent)}% would take again`);
         }
 
         if (profInfo.avgDifficulty > 0) {
-              parts.push(`Difficulty: ${Number(profInfo.avgDifficulty).toFixed(1)}/5`);
+            parts.push(`Difficulty: ${Number(profInfo.avgDifficulty).toFixed(1)}/5`);
         }
 
         if (parts.length) {
@@ -154,7 +154,11 @@ function addBadges() {
                 const sectionElement = span.closest("table");
 
                 if (sectionElement) {
-                    sectionElement.dataset.hasProfCheckRating = "false";
+                    sectionElement.dataset.profcheckHasRating = "false";
+
+                    if (hideUnratedEnabled) {
+                        sectionElement.style.display = "none";
+                    }
                 }
 
                 // No RMP entry is greyed out so it's easy to tell.
@@ -172,7 +176,7 @@ function addBadges() {
             const sectionElement = span.closest("table");
 
             if (sectionElement) {
-                sectionElement.dataset.hasProfCheckRating = "true";
+                sectionElement.dataset.profcheckHasRating = "true";
                 sectionElement.dataset.profcheckRating = profInfo.avgRating;
                 sectionElement.dataset.profcheckNumRatings = profInfo.numRatings;
                 sectionElement.dataset.profcheckWouldTakeAgain = profInfo.wouldTakeAgainPercent;
@@ -185,6 +189,45 @@ function addBadges() {
     });
 };
 
+/*
+------------------------------------------
+FILTERING LOGIC
+------------------------------------------
+*/
+
+// FILTER 1: HIDE UNRATED PROFESSORS
+
+let hideUnratedEnabled = false;
+
+async function loadFilterSettings() {
+    const result = await chrome.storage.local.get("hide-unrated");
+
+    hideUnratedEnabled = result["hide-unrated"] ?? false;
+
+    applyHideUnrated(hideUnratedEnabled);
+}
+
+function applyHideUnrated(hideUnrated) {
+    const sections = document.querySelectorAll("[data-profcheck-has-rating]");
+
+    // if the hideUnrated checkbox is checked AND the professor has no rating, hide the table. otherwise, show it.
+    sections.forEach(section => {
+        if (hideUnrated && section.dataset.profcheckHasRating === "false") {
+            section.style.display = "none";
+        }
+        else {
+            section.style.display = "";
+        }
+    });
+}
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === "local" && changes["hide-unrated"]) {
+        hideUnratedEnabled = changes["hide-unrated"].newValue;
+
+        applyHideUnrated(hideUnratedEnabled);
+    }
+});
 
 
 // The extension's own DOM changes count as mutations, so we need to debounce the logic for adding badges
@@ -199,3 +242,4 @@ const observer = new MutationObserver(() => {
 observer.observe(document.body, { childList: true, subtree: true });
 
 addBadges();
+loadFilterSettings();

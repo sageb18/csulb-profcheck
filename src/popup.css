@@ -15,6 +15,7 @@
 
 body {
     margin: 0;
+    padding: 0;
     width: 340px;
 
     background: var(--pc-paper);
@@ -154,6 +155,25 @@ body {
     height: 0;
 
     opacity: 0;
+}
+
+.pc-popup-checkbox-textbox {
+    width: 100px;
+    padding: 4px 8px;
+
+    background: var(--pc-paper);
+
+    border: 1.5px solid var(--pc-track);
+    border-radius: 5px;
+
+    color: var(--pc-ink);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition:
+        background 120ms ease,
+        border-color 120ms ease;
 }
 
 .pc-popup-checkbox-box {
