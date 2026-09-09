@@ -1,3 +1,9 @@
+/*
+------------------------------------------
+FILTER 1: HIDE UNRATED PROFESSORS
+------------------------------------------
+*/
+
 const hideUnratedCheckbox = document.getElementById('hide-unrated');
 
 async function loadSettings() {
@@ -12,3 +18,12 @@ hideUnratedCheckbox.addEventListener('change', async () => {
 });
 
 loadSettings();
+
+/*
+------------------------------------------
+FILTER 2: FILTER BY MINIMUM RATING
+------------------------------------------
+*/
+
+const minimumRatingCheckbox = document.getElementById('minimum-rating');
+const minimumRatingValueInput = document.getElementById('minimum-rating-value');
