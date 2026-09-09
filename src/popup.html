@@ -8,11 +8,10 @@
     <link rel="stylesheet" href="popup.css">
 </head>
 
-
 <body>
-    <main class="popup">
-        <header class="popup__header">
-            <div class="popup__logo">
+    <main class="pc-popup">
+        <header class="pc-popup-header">
+            <div class="pc-popup-logo">
                 <img
                     src="../icons/icon-48.png"
                     alt="CSULB ProfCheck logo"
@@ -22,45 +21,58 @@
             </div>
 
             <div>
-                <h1 class="popup__title">CSULB ProfCheck</h1>
-                <p class="popup__subtitle">Registration made easier.</p>
+                <h1 class="pc-popup-title">CSULB ProfCheck</h1>
+                <p class="pc-popup-subtitle">Registration made easier.</p>
             </div>
         </header>
 
-        <div class="popup__divider"></div>
+        <div class="pc-popup-divider"></div>
 
-        <section class="popup__status">
-            <div class="popup__status-dot"></div>
+        <section class="pc-popup-status">
+            <div class="pc-popup-status-dot"></div>
             <span>ProfCheck working!</span>
         </section>
 
-        <p class="popup__description">
+        <p class="pc-popup-description">
             Professor ratings appear automatically inside your
             MyCSULB class search results.
         </p>
 
+        <div class="pc-popup-divider"></div>
+
+        <section class="pc-popup-section">
+            <h2 class="pc-popup-section-title">Filters</h2>
+
+            <label class="pc-popup-checkbox">
+                <input type="checkbox" class="pc-popup-checkbox-input" id="hide-unrated">
+                <span class="pc-popup-checkbox-box"></span>
+                <span class="pc-popup-checkbox-label">Hide unrated professors</span>
+            </label>
+        </section>
+
         <a
-            class="popup__button"
+            class="pc-popup-button"
             href="https://my.csulb.edu/"
             target="_blank"
             rel="noopener noreferrer"
         >
             <span>Open MyCSULB</span>
-            <span class="popup__arrow">→</span>
+            <span class="pc-popup-arrow">→</span>
         </a>
 
-        <footer class="popup__footer">
+        <footer class="pc-popup-footer">
             <span>v1.1.0</span>
+            <span>by Sage Taddeo</span>
 
             <a
                 href="#"
-                class="popup__footer-link"
+                class="pc-popup-footer-link"
             >
                 Feedback ↗
             </a>
         </footer>
     </main>
-    
+
     <script src="popup.js"></script>
 </body>
 </html>

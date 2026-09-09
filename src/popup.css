@@ -23,19 +23,19 @@ body {
     font-family: var(--pc-font);
 }
 
-.popup {
+.pc-popup {
     padding: 20px;
 }
 
 /* ============== HEADER ============== */
 
-.popup__header {
+.pc-popup-header {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.popup__logo {
+.pc-popup-logo {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -58,7 +58,7 @@ body {
     box-shadow: 0 2px 6px rgba(20, 15, 5, 0.08);
 }
 
-.popup__title {
+.pc-popup-title {
     margin: 0;
 
     font-size: 17px;
@@ -68,7 +68,7 @@ body {
     letter-spacing: -0.02em;
 }
 
-.popup__subtitle {
+.pc-popup-subtitle {
     margin: 3px 0 0;
 
     font-size: 12px;
@@ -79,7 +79,7 @@ body {
 
 /* ============== DIVIDER ============== */
 
-.popup__divider {
+.pc-popup-divider {
     height: 1px;
 
     margin: 17px 0;
@@ -89,37 +89,30 @@ body {
 
 /* ============== STATUS ============== */
 
-.popup__status {
-    display: inline-flex;
+.pc-popup-status {
+    display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
 
-    padding: 6px 10px;
+    color: var(--pc-ink-soft);
 
-    background: var(--pc-gold-tint);
-
-    border: 1px solid rgba(201, 144, 15, 0.3);
-    border-radius: 999px;
-
-    color: var(--pc-ink);
-
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
 }
 
-.popup__status-dot {
-    width: 7px;
-    height: 7px;
+.pc-popup-status-dot {
+    width: 6px;
+    height: 6px;
+
+    flex-shrink: 0;
 
     background: var(--pc-gold-dark);
     border-radius: 50%;
-
-    box-shadow: 0 0 0 3px rgba(235, 169, 27, 0.15);
 }
 
 /* ============== DESCRIPTION ============== */
 
-.popup__description {
+.pc-popup-description {
     margin: 14px 2px 18px;
 
     color: var(--pc-ink-soft);
@@ -129,9 +122,98 @@ body {
     line-height: 1.5;
 }
 
+/* ============== FILTERS ============== */
+
+.pc-popup-section {
+    margin: 0 0 18px;
+}
+
+.pc-popup-section-title {
+    margin: 0 0 8px;
+
+    color: var(--pc-ink-soft);
+
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.pc-popup-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    cursor: pointer;
+}
+
+.pc-popup-checkbox-input {
+    position: absolute;
+
+    width: 0;
+    height: 0;
+
+    opacity: 0;
+}
+
+.pc-popup-checkbox-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: 18px;
+    height: 18px;
+
+    background: var(--pc-paper);
+
+    border: 1.5px solid var(--pc-track);
+    border-radius: 5px;
+
+    transition:
+        background 120ms ease,
+        border-color 120ms ease;
+}
+
+.pc-popup-checkbox-box::after {
+    content: "";
+
+    width: 5px;
+    height: 9px;
+
+    border-right: 2px solid var(--pc-ink);
+    border-bottom: 2px solid var(--pc-ink);
+
+    transform: rotate(45deg) translate(-1px, -1px);
+
+    opacity: 0;
+
+    transition: opacity 100ms ease;
+}
+
+.pc-popup-checkbox-input:checked + .pc-popup-checkbox-box {
+    background: var(--pc-gold);
+    border-color: var(--pc-gold-dark);
+}
+
+.pc-popup-checkbox-input:checked + .pc-popup-checkbox-box::after {
+    opacity: 1;
+}
+
+.pc-popup-checkbox-input:focus-visible + .pc-popup-checkbox-box {
+    box-shadow: 0 0 0 3px rgba(235, 169, 27, 0.25);
+}
+
+.pc-popup-checkbox-label {
+    color: var(--pc-ink);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
 /* ============== BUTTON ============== */
 
-.popup__button {
+.pc-popup-button {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -160,7 +242,7 @@ body {
         box-shadow 120ms ease;
 }
 
-.popup__button:hover {
+.pc-popup-button:hover {
     background: #F0B229;
 
     box-shadow: 0 4px 10px rgba(20, 15, 5, 0.12);
@@ -168,18 +250,18 @@ body {
     transform: translateY(-1px);
 }
 
-.popup__button:active {
+.pc-popup-button:active {
     transform: translateY(0);
 }
 
-.popup__arrow {
+.pc-popup-arrow {
     font-size: 16px;
     line-height: 1;
 }
 
 /* ============== FOOTER ============== */
 
-.popup__footer {
+.pc-popup-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -193,13 +275,13 @@ body {
     font-weight: 600;
 }
 
-.popup__footer-link {
+.pc-popup-footer-link {
     color: var(--pc-ink-soft);
     text-decoration: none;
 
     transition: color 120ms ease;
 }
 
-.popup__footer-link:hover {
+.pc-popup-footer-link:hover {
     color: var(--pc-gold-dark);
 }
