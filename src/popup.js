@@ -22,9 +22,11 @@ minimumRatingCheckbox.addEventListener('change', async () => {
     await chrome.storage.local.set({ 'minimum-rating': minimumRatingCheckbox.checked })
 })
 
+// IMPORTANT: value inputs HAVE TO USE 'input' NOT 'change' learned this the hard way..
 minimumRatingValueInput.addEventListener('input', async () => {
     const value = parseFloat(minimumRatingValueInput.value);
 
+    // check if value is not a number
     if (Number.isNaN(value)) {
         await chrome.storage.local.set({ 'minimum-rating-value': null })
     }
