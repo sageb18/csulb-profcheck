@@ -88,28 +88,6 @@ body {
     background: var(--pc-track);
 }
 
-/* ============== STATUS ============== */
-
-.pc-popup-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    color: var(--pc-ink-soft);
-
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.pc-popup-status-dot {
-    width: 6px;
-    height: 6px;
-
-    flex-shrink: 0;
-
-    background: var(--pc-gold-dark);
-    border-radius: 50%;
-}
 
 /* ============== DESCRIPTION ============== */
 
