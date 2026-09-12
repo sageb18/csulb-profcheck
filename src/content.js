@@ -156,9 +156,7 @@ function addBadges() {
                 if (sectionElement) {
                     sectionElement.dataset.profcheckHasRating = "false";
 
-                    if (hideUnratedEnabled) {
-                        sectionElement.style.display = "none";
-                    }
+                    applyFilters();
                 }
 
                 // No RMP entry is greyed out so it's easy to tell.
@@ -172,7 +170,7 @@ function addBadges() {
 
 
             // MyCSULB stores their class sections in a table, so we can attach the professor info
-            // to each table for later use (sorting by rating, filtering by difficulty, etc).
+            // to each table for filtering
             const sectionElement = span.closest("table");
 
             if (sectionElement) {
@@ -181,6 +179,8 @@ function addBadges() {
                 sectionElement.dataset.profcheckNumRatings = profInfo.numRatings;
                 sectionElement.dataset.profcheckWouldTakeAgain = profInfo.wouldTakeAgainPercent;
                 sectionElement.dataset.profcheckDifficulty = profInfo.avgDifficulty;
+
+                applyFilters();
             }
 
             badge.className = "pc-badge";
@@ -195,38 +195,84 @@ FILTERING LOGIC
 ------------------------------------------
 */
 
-// FILTER 1: HIDE UNRATED PROFESSORS
-
+// instantiate 3 pieces of state 
 let hideUnratedEnabled = false;
+let minimumRatingEnabled = false;
+let minimumRatingValue = null;
 
 async function loadFilterSettings() {
-    const result = await chrome.storage.local.get("hide-unrated");
+    const result = await chrome.storage.local.get([
+        "hide-unrated",
+        "minimum-rating",
+        "minimum-rating-value"]);
 
     hideUnratedEnabled = result["hide-unrated"] ?? false;
+    minimumRatingEnabled = result["minimum-rating"] ?? false;
+    minimumRatingValue = result["minimum-rating-value"] ?? null;
 
-    applyHideUnrated(hideUnratedEnabled);
+    applyFilters();
 }
 
-function applyHideUnrated(hideUnrated) {
-    const sections = document.querySelectorAll("[data-profcheck-has-rating]");
+function applyFilters() {
+    const sections = document.querySelectorAll(
+        "[data-profcheck-has-rating]"
+    );
 
-    // if the hideUnrated checkbox is checked AND the professor has no rating, hide the table. otherwise, show it.
     sections.forEach(section => {
-        if (hideUnrated && section.dataset.profcheckHasRating === "false") {
-            section.style.display = "none";
+        let shouldHide = false;
+
+        const hasRating =
+            section.dataset.profcheckHasRating === "true";
+
+        const rating =
+            Number(section.dataset.profcheckRating);
+
+
+        // FILTER 1: Hide unrated professors
+        if (hideUnratedEnabled && !hasRating) {
+            shouldHide = true;
         }
-        else {
-            section.style.display = "";
+
+
+        // FILTER 2: Filter professors by minimum rating
+        if (
+            minimumRatingEnabled &&
+            minimumRatingValue !== null &&
+            hasRating &&
+            rating < minimumRatingValue
+        ) {
+            shouldHide = true;
         }
+
+
+        section.style.display = shouldHide ? "none" : "";
     });
 }
 
-chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName === "local" && changes["hide-unrated"]) {
-        hideUnratedEnabled = changes["hide-unrated"].newValue;
 
-        applyHideUnrated(hideUnratedEnabled);
+chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== "local") return;
+
+
+    if (changes["hide-unrated"]) {
+        hideUnratedEnabled =
+            changes["hide-unrated"].newValue ?? false;
     }
+
+
+    if (changes["minimum-rating"]) {
+        minimumRatingEnabled =
+            changes["minimum-rating"].newValue ?? false;
+    }
+
+
+    if (changes["minimum-rating-value"]) {
+        minimumRatingValue =
+            changes["minimum-rating-value"].newValue ?? null;
+    }
+
+
+    applyFilters();
 });
 
 
