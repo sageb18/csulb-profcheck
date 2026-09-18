@@ -41,6 +41,13 @@ Not affiliated with or endorsed by California State University, Long Beach, Orac
 
 ## Update Notes
 
+version 1.2.0:
+- new ProfCheck settings popup
+- hide classes with unrated professors
+- filter classes by any minimum professor rating
+- your filter settings now stay saved
+- general improvements to how ProfCheck handles class sections
+  
 version 1.1.0:
 - added professor names as hyperlinks to their RateMyProfessors pages
 - added caching to make professor ratings load faster and reduce unnecessary requests
