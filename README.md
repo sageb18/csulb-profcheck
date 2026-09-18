@@ -2,7 +2,9 @@
 
 # CSULB ProfCheck
 
-<img width="830" height="397" alt="image" src="https://github.com/user-attachments/assets/8536b06f-9861-47bf-953d-f73a619130ec" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/f1bb8904-65bd-4385-9512-53f4dec6b604" />
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/078e6d4f-9009-4024-aa99-5c28d33fd18b" />
+
 
 
 [![Install from the Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Install%20now-EBA91B?style=for-the-badge&logo=googlechrome&logoColor=1B1B1B)](https://chromewebstore.google.com/detail/csulb-profcheck/fmkjoemppgjjnephaebphlcekhnaiepc)
